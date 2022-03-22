@@ -14,6 +14,7 @@ fn qs<T: Ord + Copy>(list: &mut [T], lo: usize, hi: usize) {
 //partition the list, putting all values larger than the pivot to the right of it
 fn partition<T: Ord + Copy>(list: &mut [T], lo: usize, hi: usize) -> usize {
     //Rightmost element selected as pivot. Not always optimal, but fast and easy.
+    //It's also possible to take the middle of 3 different values, preventing the worst case scenario
     let pivot = list[hi];
     let mut i = lo;
     for j in lo..hi {

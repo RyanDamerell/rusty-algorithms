@@ -1,6 +1,6 @@
 
 //Inserting into and removing from a heap is O(log n) complexity
-// we can exploit this fact to create an easy sort that's O(n log n)
+//we can exploit this fact to create an easy sort that's O(n log n)
 pub fn heapsort<T: Ord + Copy>(list: &mut [T]) {
     let mut heap = Vec::with_capacity(list.len());
     for i in 0..list.len() {
@@ -17,8 +17,8 @@ fn insert<T: Ord + Copy>(heap: &mut Vec<T>, val: T) {
     heap.push(val);
     while i > 0 {
         if heap[i] < heap[i >> 1] {
-            swp(heap, i, i >> 1);
-            i = i >> 1;
+            heap.swap(i, i >> 1);
+            i >>= 1;
         } else {
             break;
         }
@@ -32,20 +32,14 @@ fn extract<T: Ord + Copy>(heap: &mut Vec<T>) -> T {
     heap[0] = heap.pop().unwrap();
     loop {
         if (i << 1) < heap.len() && heap[i] < heap[i << 1] {
-            swp(heap, i, i >> 1);
-            i = i << 1;
+            heap.swap(i, i >> 1);
+            i <<= 1;
         } else if (i << 1) + 1 < heap.len() && heap[i] < heap[(i << 1) + 1] {
-            swp(heap, i, (i << 1) + 1);
+            heap.swap(i, (i << 1) + 1);
             i = (i << 1) + 1;
         } else {
             break;
         }
     }
     out
-}
-
-fn swp<T: Ord + Copy>(list: &mut Vec<T>, a: usize, b: usize) {
-    let t = list[a];
-    list[a] = list[b];
-    list[b] = t;
 }

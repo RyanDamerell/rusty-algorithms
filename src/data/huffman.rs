@@ -1,14 +1,37 @@
-use std::{collections::HashMap, hash::Hash, iter};
+use std::{
+    collections::{BinaryHeap, HashMap},
+    hash::Hash,
+    iter,
+    ops::Add,
+};
 
-//WIP: undocumented and not fully tested/implemented
+//TODO: undocumented and not fully tested/implemented
 
+#[derive(Clone, PartialEq, Eq, Hash)]
 struct BinaryString {
     bits: Vec<u8>,
     endpos: u64,
     index: u64,
 }
 
+impl Default for BinaryString {
+    fn default() -> Self {
+        BinaryString {
+            bits: Vec::new(),
+            endpos: 0,
+            index: 0,
+        }
+    }
+}
+
 impl BinaryString {
+    fn new(b: bool) -> Self {
+        BinaryString {
+            bits: vec![0],
+            endpos: 1,
+            index: 0,
+        }
+    }
     fn append(&mut self, other: &mut Self) {
         if self.endpos & 0b111 == 0 {
             //if endpos is divisible by 8
@@ -26,6 +49,11 @@ impl BinaryString {
         } else {
             *self.bits.last_mut().unwrap() |= if bit { 1 << (self.endpos & 7) } else { 0 };
         }
+    }
+    fn with(&self, rhs: bool) -> Self {
+        let mut out = self.clone();
+        out.push(rhs);
+        out
     }
 }
 
@@ -50,7 +78,7 @@ enum HuffTree<T: Eq + Hash + Copy> {
     Leaf(usize, T),
 }
 
-type HuffEncodingTable<T: Eq + Hash + Copy> = HashMap<T, BinaryString>;
+type HuffEncodingTable<T: Eq + Hash + Copy> = HashMap<BinaryString, T>;
 
 impl<T: Eq + Hash + Copy> HuffTree<T> {
     fn gen_trees(list: Vec<T>) -> Vec<Box<Self>> {
@@ -91,9 +119,29 @@ impl<T: Eq + Hash + Copy> HuffTree<T> {
         }
     }
 
-    fn create_encoding_table(&self)->HuffEncodingTable<T>{
-        let out = HashMap::new();
-        
+    fn create_encoding_table(&self) -> HuffEncodingTable<T> {
+        let mut out = HashMap::new();
+        match self {
+            HuffTree::Node(_, left, right) => {
+                left.encoding_recurse(BinaryString::new(false), &mut out);
+                right.encoding_recurse(BinaryString::new(true), &mut out);
+            }
+            HuffTree::Leaf(_, elem) => {
+                out.insert(BinaryString::new(false), *elem);
+            }
+        }
         out
+    }
+
+    fn encoding_recurse(&self, s: BinaryString, mut table: &mut HuffEncodingTable<T>) {
+        match self {
+            HuffTree::Node(_, left, right) => {
+                left.encoding_recurse(s.with(false), &mut table);
+                right.encoding_recurse(s.with(true), &mut table);
+            }
+            HuffTree::Leaf(_, elem) => {
+                table.insert(s, *elem);
+            }
+        }
     }
 }

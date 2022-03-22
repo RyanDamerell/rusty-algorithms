@@ -14,4 +14,4 @@ itertools = "0.10"
 rand_pcg = "0.3"
 
 [dev-dependencies]
-rayon = "1.5"
+rayon = "1.5" #simply to make testing faster

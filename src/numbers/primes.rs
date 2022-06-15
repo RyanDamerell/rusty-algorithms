@@ -1,8 +1,30 @@
-//An efficient implementation of the Sieve of Eratosthenes
+// Fermat primality test
+pub fn prime_test(n: i64, mut tests: i64) -> bool {
+    if n <= 1 || n == 4 {
+        return false;
+    } else if n <= 3 {
+        return true;
+    }
 
+    while tests > 0 {
+        let a = thread_rng().gen_range(1..n);
+        if gcd(n, a) != 1 {
+            return false; //n and a are not co-prime, ergo n is not prime
+        }
+
+        if int_powmod(a, n, n) != a {
+            return false;
+        }
+
+        tests -= 1;
+    }
+    true
+}
+
+//An efficient implementation of the Sieve of Eratosthenes
 pub fn sieve(max: i64) -> Vec<i64> {
     // precondition, max > 2
-    let approx_primes = 3 * max / (approx_int_ln(max) - 1); //should allocate enough positions in almost every case
+    let approx_primes = (1.375f64 * max.into() / ln(max)).ceil() as usize; //should allocate enough positions in almost every case
     let mut primes = Vec::with_capacity(approx_primes as usize);
     primes.push(2); //start with 2 right off the bat
     let mut current = 3; //first calculated value is 3
@@ -41,15 +63,4 @@ fn approx_int_sqrt(n: i64) -> i64 {
 fn approx_int_log2(n: i64) -> i64 {
     64 - n.leading_zeros() as i64
     // eventually will be able to replaced by n.log2(), currently experimental
-}
-
-//lightning fast natural log approximation
-fn approx_int_ln(n: i64) -> i64 {
-    (approx_int_log2(n) * 369) >> 8
-    // 369 is used here because it's approximately 2^8/log_2(e)
-    // Essentially, we're calculating log_2(n)*2^8*(1/log_2(e)), because we can divide by 2^8 in constant time
-    // we're left with an approximation of log_2(n)/log_2(e), aka ln(n)
-    // Since we're only using this value for allocation estimates, they can be very rough and general.
-    // This application actually doesn't need to be super optimized for performance, since we're only
-    // applying it once,but this is a lot easier to implement than a proper ln algorithm
 }

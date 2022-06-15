@@ -7,7 +7,7 @@ pub fn is_sorted<T: Ord + Copy>(list: &[T]) -> bool {
 
 pub fn scramble<T: Ord + Copy>(list: &mut [T]) {
     let mut rng = rand::thread_rng();
-    for _ in 0..list.len() {
-        list.swap(rng.gen_range(0..list.len()), rng.gen_range(0..list.len()));
+    for i in 0..list.len() {
+        list.swap(i, rng.gen_range(i..list.len()));
     }
 }

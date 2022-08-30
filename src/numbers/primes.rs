@@ -1,3 +1,6 @@
+use super::basic::{gcd, int_powmod};
+use rand::Rng;
+
 // Fermat primality test
 pub fn prime_test(n: i64, mut tests: i64) -> bool {
     if n <= 1 || n == 4 {
@@ -7,7 +10,7 @@ pub fn prime_test(n: i64, mut tests: i64) -> bool {
     }
 
     while tests > 0 {
-        let a = thread_rng().gen_range(1..n);
+        let a = rand::thread_rng().gen_range(1..n);
         if gcd(n, a) != 1 {
             return false; //n and a are not co-prime, ergo n is not prime
         }

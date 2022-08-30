@@ -1,28 +1,5 @@
 use rand::{thread_rng, Rng};
 
-// Fermat primality test
-pub fn prime_test(n: i64, mut tests: i64) -> bool {
-    if n <= 1 || n == 4 {
-        return false;
-    } else if n <= 3 {
-        return true;
-    }
-
-    while tests > 0 {
-        let a = thread_rng().gen_range(1..n);
-        if gcd(n, a) != 1 {
-            return false; //n and a are not co-prime, ergo n is not prime
-        }
-
-        if int_powmod(a, n, n) != a {
-            return false;
-        }
-
-        tests -= 1;
-    }
-    true
-}
-
 // Euclid's greatest common divisor algorithm
 pub fn gcd(a: i64, b: i64) -> i64 {
     match a % b {
@@ -32,9 +9,9 @@ pub fn gcd(a: i64, b: i64) -> i64 {
 }
 
 // fast integer exponentiation through recursion
-pub fn int_pow(base: i64, exp: i64) -> i64 {
+pub fn int_pow(base: f64, exp: i64) -> f64 {
     if exp == 0 {
-        1
+        1.0
     } else if exp & 1 == 1 {
         base * int_pow(base, exp - 1)
     } else {
@@ -98,3 +75,35 @@ pub fn sqrt_params(n: f64, error: f64, maxiter: usize) -> f64 {
     x
 }
 
+pub fn ln_epsilon(x: f64, epsilon: f64) -> f64 {
+    /*double yn = x - 1.0d; // using the first term of the taylor series as initial-value
+    double yn1 = yn;
+
+    do
+    {
+        yn = yn1;
+        yn1 = yn + 2 * (x - System.Math.Exp(yn)) / (x + System.Math.Exp(yn));
+    } while (System.Math.Abs(yn - yn1) > epsilon);
+
+    return yn1; */
+
+    let y_n = x - 1.0;
+    let y_n1 = y_n;
+
+    loop {
+        y_n = y_n1;
+        y_n1 = y_n + 2 * (x - exp_frac(y_n)) / (x + exp_frac(y_n));
+        if (y_n - y_n1).abs() <= epsilon {
+            break;
+        }
+    }
+}
+
+pub fn exp_frac(n: f64)->f64 {
+    0.999966
+        + 1.00039 * n
+        + 0.498051 * int_pow(n, 2)
+        + 0.171742 * int_pow(n, 3)
+        + 0.0343485 * int_pow(n, 4)
+        + 0.0137393 * int_pow(n, 5)
+} //0.999966 + 1.00039 x + 0.498051 x^2 + 0.171742 x^3 + 0.0343485 x^4 + 0.0137393 x^5

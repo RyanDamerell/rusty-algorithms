@@ -1,6 +1,7 @@
 //This module contains algorithms that operate on data
 
-//TODO: runlength, finish huffman, test kmeans, documentation
+//TODO: test kmeans, documentation
 
 pub mod kmeans;
 pub mod huffman;
+

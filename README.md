@@ -4,4 +4,4 @@ For educational purposes, I decided to make an open-source repository of a bunch
 
 ## The state of this project
 
-This is still very much a work in progress. Some algorithms are written, very few are fully documented. Still, any piece of this project is fully provided under [the Unlicense](http://unlicense.org), so if you see something you want to use, go for it.
+This is still very much a work in progress. Many algorithms are written, but very few are fully documented. Still, any piece of this project is fully provided under [the Unlicense](http://unlicense.org), so if you see something you want to use, go for it.

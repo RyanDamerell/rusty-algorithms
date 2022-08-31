@@ -1,6 +1,6 @@
 //Quicksort as an algorithm is named for requiring remarkably few comparisons
 pub fn quicksort<T: Ord + Copy>(list: &mut [T]) {
-    qs(list, 0, list.len());
+    qs(list, 0, list.len()); //call recursive function with initial arguments
 }
 
 fn qs<T: Ord + Copy>(list: &mut [T], lo: usize, hi: usize) {

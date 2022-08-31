@@ -11,7 +11,7 @@ pub fn heapsort<T: Ord + Copy>(list: &mut [T]) {
     }
 }
 
-//Insert into heap, making sure that x < y | y is a child of x
+//Insert into heap, making sure that x < y where y is a child of x
 fn insert<T: Ord + Copy>(heap: &mut Vec<T>, val: T) {
     let mut i = heap.len();
     heap.push(val);

@@ -1,4 +1,4 @@
-use super::basic::{gcd, int_powmod};
+use super::basic::{gcd, int_powmod, ln_epsilon};
 use rand::Rng;
 
 // Fermat primality test
@@ -11,12 +11,9 @@ pub fn prime_test(n: i64, mut tests: i64) -> bool {
 
     while tests > 0 {
         let a = rand::thread_rng().gen_range(1..n);
-        if gcd(n, a) != 1 {
-            return false; //n and a are not co-prime, ergo n is not prime
-        }
 
-        if int_powmod(a, n, n) != a {
-            return false;
+        if gcd(n, a) != 1 || int_powmod(a, n, n) != a {
+            return false; //n and a are not co-prime, or a^n doesn't pass fermat test
         }
 
         tests -= 1;
@@ -27,8 +24,8 @@ pub fn prime_test(n: i64, mut tests: i64) -> bool {
 //An efficient implementation of the Sieve of Eratosthenes
 pub fn sieve(max: i64) -> Vec<i64> {
     // precondition, max > 2
-    let approx_primes = (1.375f64 * max.into() / ln(max)).ceil() as usize; //should allocate enough positions in almost every case
-    let mut primes = Vec::with_capacity(approx_primes as usize);
+    let approx_primes = (1.375f64 * (max as f64) / ln_epsilon(max as f64, 0.01)).ceil() as usize; //should allocate enough positions in almost every case
+    let mut primes = Vec::with_capacity(approx_primes);
     primes.push(2); //start with 2 right off the bat
     let mut current = 3; //first calculated value is 3
     while current < max {

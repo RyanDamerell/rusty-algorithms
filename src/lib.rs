@@ -33,4 +33,9 @@ mod tests {
         insertion_sort(&mut list);
         assert!(is_sorted(&list));
     }
+
+    #[test]
+    fn test_data(){
+        
+    }
 }

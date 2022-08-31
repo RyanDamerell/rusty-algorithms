@@ -9,7 +9,7 @@ fn sort<T: Ord + Copy>(list: &mut [T], lo: usize, hi: usize) {
     if hi - lo >= 2 { //if the list has more than 2 elements
         let x = (hi - lo) / 2 + lo;   //divide the list in half
         sort(list, lo, x);              //sort the lower half
-        sort(list, x + 1, hi);          //sort sort the upper half
+        sort(list, x + 1, hi);          //sort the upper half
         merge(list, lo, x, x + 1, hi); //merge the two lists
     }
 }

@@ -83,7 +83,7 @@ enum HuffTree<T: Eq + Hash + Copy> {
 type HuffEncodingTable<T: Eq + Hash + Copy> = HashMap<T, BinaryString>;
 
 impl<T: Eq + Hash + Copy> HuffTree<T> {
-    fn gen_trees(list: Vec<T>) -> Vec<Box<Self>> {
+    fn gen_trees(list: &Vec<T>) -> Vec<Box<Self>> {
         let mut map: HashMap<T, usize> = HashMap::new();
         for elem in list {
             match map.get_mut(&elem) {
@@ -91,7 +91,7 @@ impl<T: Eq + Hash + Copy> HuffTree<T> {
                     *i += 1;
                 }
                 None => {
-                    map.insert(elem, 1);
+                    map.insert(*elem, 1);
                 }
             }
         }
@@ -143,11 +143,11 @@ impl<T: Eq + Hash + Copy> HuffTree<T> {
 }
 
 fn HuffmanEncodeFull<T: Eq + Hash + Copy>(data: Vec<T>) -> (HuffTree<T>, BinaryString) {
-    let root = *HuffTree::merge_all(&mut HuffTree::gen_trees(data));
+    let root = *HuffTree::merge_all(&mut HuffTree::gen_trees(&data));
     let table = root.create_encoding_table();
     let mut bin_str = BinaryString::empty();
-    for elem in data.iter() {
-        let temp = table.get(&elem).unwrap();
+    for elem in data {
+        let mut temp = table.get(&elem).unwrap().clone();
         bin_str.append(&mut temp);
     }
     (root, bin_str)

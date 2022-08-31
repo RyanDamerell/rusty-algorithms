@@ -23,8 +23,8 @@ pub fn insertion_sort<T: Ord + Copy>(list: &mut [T]) {
     }
 }
 
-//Selection sort is sort of the opposite, finding the minimum of the remaining elements
-//and placing it in its appropriate position to the left of all other remaining elements
+// Selection sort is sort of the opposite of insertion sort, finding the minimum of the remaining
+// elements and placing it in its appropriate position to the left of all other elements
 pub fn selection_sort<T: Ord + Copy>(list: &mut [T]) {
     for i in 0..list.len() {
         //get min of the remaining elements and return the index, idiomatically

@@ -87,19 +87,19 @@ pub fn ln_epsilon(x: f64, epsilon: f64) -> f64 {
 
     return yn1; */
 
-    let y_n = x - 1.0;
-    let y_n1 = y_n;
+    let mut y_n = x - 1.0;
+    let mut y_n1 = y_n;
 
     loop {
         y_n = y_n1;
-        y_n1 = y_n + 2 * (x - exp_frac(y_n)) / (x + exp_frac(y_n));
+        y_n1 = y_n + 2.0 * (x - exp_frac(y_n)) / (x + exp_frac(y_n));
         if (y_n - y_n1).abs() <= epsilon {
-            break;
+            return y_n1;
         }
     }
 }
 
-pub fn exp_frac(n: f64)->f64 {
+pub fn exp_frac(n: f64) -> f64 {
     0.999966
         + 1.00039 * n
         + 0.498051 * int_pow(n, 2)

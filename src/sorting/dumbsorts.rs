@@ -11,13 +11,14 @@ pub fn bogosort<T: Ord + Copy>(list: &mut [T]) {
 }
 
 //Bubblesort is often considered the brute force or "naive" solution to the sorting problem.
-//Though it can theoretically be effective in almost-sorted lists, it's poor scaling and bad
+//Though it can be effective in almost-sorted lists, it's poor scaling and bad
 //empirical performance leads it to almost never be used.
 pub fn bubblesort<T: Ord + Copy>(list: &mut [T]) {
     let mut max = list.len() - 1; //we don't need to loop through the whole list each time, it reduces each loop
     while max > 1 {
         let mut flag = true;
-        for i in 0..max { //for each pair of elements
+        for i in 0..max {
+            //for each pair of elements
             if list[i] < list[i + 1] {
                 //swap the elements if they aren't in order
                 list.swap(i, i + 1);

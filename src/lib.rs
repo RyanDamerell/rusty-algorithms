@@ -35,7 +35,7 @@ mod tests {
         assert!(is_sorted(&list), "[{}]", list.iter().join(","));
 
         scramble(&mut list);
-        efficient_heapsort(&mut list);
+        heapsort(&mut list);
         assert!(is_sorted(&list), "[{}]", list.iter().join(","));
     }
 

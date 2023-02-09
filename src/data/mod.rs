@@ -2,6 +2,5 @@
 
 //TODO: test kmeans, documentation
 
-pub mod kmeans;
 pub mod huffman;
-
+pub mod kmeans;

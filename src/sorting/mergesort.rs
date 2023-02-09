@@ -1,27 +1,42 @@
 //Mergesort is an efficient algorithm that relies heavily on recursion and can be
-// very effectively parallelized with slight adjustments. This implementation is in-place.
+// very effectively parallelized with slight adjustments.
 pub fn mergesort<T: Ord + Copy>(list: &mut [T]) {
-    //call recursive function with initial values
-    sort(list, 0, list.len());
+    sort(list, &mut Vec::with_capacity(list.len()));
 }
 
-fn sort<T: Ord + Copy>(list: &mut [T], lo: usize, hi: usize) {
-    if hi - lo >= 2 { //if the list has more than 2 elements
-        let x = (hi - lo) / 2 + lo;   //divide the list in half
-        sort(list, lo, x);              //sort the lower half
-        sort(list, x + 1, hi);          //sort the upper half
-        merge(list, lo, x, x + 1, hi); //merge the two lists
+fn sort<T: Ord + Copy>(list: &mut [T], buffer: &mut Vec<T>) {
+    if list.len() >= 2 {
+        //if the list has more than 2 elements
+        {
+            let (lo, hi) = list.split_at_mut(list.len() / 2); //divide the list in half
+            mergesort(lo); //sort the lower half
+            mergesort(hi); //sort the upper half
+        }
+        merge(list, buffer);
     }
 }
 
-fn merge<T: Ord + Copy>(list: &mut [T], s1: usize, e1: usize, s2: usize, e2: usize) {
-    if s1 >= e1 || s2 >= e2 || list[e1] <= list[s2] {
-        return; // if the segments are already sorted, do nothing
-    } else if list[s2] > list[s1] {
-        list.swap(s1, s2);
-        for i in s1..e1 {
-            list.swap(i, i + 1);
+fn merge<T: Ord + Copy>(list: &mut [T], buffer: &mut Vec<T>) {
+    let mid = list.len() / 2;
+    let mut a = 0;
+    let mut b = mid;
+    for _ in 0..list.len() {
+        if list[a] <= list[b] {
+            buffer.push(list[a]);
+            a += 1;
+        } else {
+            buffer.push(list[b]);
+            b += 1;
+        }
+
+        if a >= mid {
+            buffer.extend_from_slice(&list[b..]);
+            break;
+        } else if b >= list.len() {
+            buffer.extend_from_slice(&list[a..mid]);
+            break;
         }
     }
-    merge(list, s1 + 1, e1, s2, e2);
+    list.copy_from_slice(buffer.as_slice());
+    buffer.resize(0, buffer[0]);
 }

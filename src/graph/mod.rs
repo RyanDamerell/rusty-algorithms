@@ -5,8 +5,6 @@ pub trait Graph {
     fn get_connections(&mut self, n: &Self::Node) -> Vec<Box<Self::Node>>;
 }
 
-pub type Path<G: Graph> = Vec<G::Node>;
-
 mod example_graphs {
     pub struct AdjMatrix {
         size: (u32, u32),

@@ -12,6 +12,7 @@ license = "MIT License"
 rand = "0.8"
 itertools = "0.10"
 rand_pcg = "0.3"
+bit-vec = "0.6"
 
 [dev-dependencies]
-rayon = "1.5" #simply to make testing faster
+rayon = "1.6" #simply to make testing faster

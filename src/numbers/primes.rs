@@ -1,4 +1,5 @@
 use super::basic::{gcd, int_powmod, ln_epsilon};
+use bit_vec::BitVec;
 use rand::Rng;
 
 // Fermat primality test
@@ -21,8 +22,8 @@ pub fn prime_test(n: i64, mut tests: i64) -> bool {
     true
 }
 
-//An efficient implementation of the Sieve of Eratosthenes
-pub fn sieve(max: i64) -> Vec<i64> {
+//An implementation of the Sieve of Eratosthenes, inspired by haskell
+pub fn prime_sieve(max: i64) -> Vec<i64> {
     // precondition, max > 2
     let approx_primes = (1.375f64 * (max as f64) / ln_epsilon(max as f64, 0.01)).ceil() as usize; //should allocate enough positions in almost every case
     let mut primes = Vec::with_capacity(approx_primes);
@@ -43,12 +44,37 @@ pub fn sieve(max: i64) -> Vec<i64> {
     primes
 }
 
+//A more traditional implementation of the Sieve of Eratosthenes
+pub fn traditional_sieve(max: i64) -> Vec<i64> {
+    // initialize the bitvec with all even numbers disqualified automatically for efficiency
+    let mut bits = BitVec::from_bytes(vec![0b01010101; max as usize].as_slice());
+    bits.set(1, false);
+    bits.set(2, true);
+    for i in 0..bits.len() {
+        if bits[i] {
+            let mut k = i * 2;
+            while max > k as i64 {
+                bits.set(k, false);
+                k += i;
+            }
+        }
+    }
+    let approx_primes = (1.375f64 * (max as f64) / ln_epsilon(max as f64, 0.01)).ceil() as usize;
+    let mut out = Vec::with_capacity(approx_primes);
+    out.extend(
+        bits.iter()
+            .enumerate()
+            .filter_map(|(i, b)| if b { Some(i as i64) } else { None }),
+    );
+    out
+}
+
 //helper functions
 
 // fast square root approximation for large integers, O(1)
 // Uses the Newton/Babylonian method detailed further in basic.rs
 fn approx_int_sqrt(n: i64) -> i64 {
-    let mut x = approx_int_log2(n);
+    let mut x = n.ilog2() as i64;
     for _ in 0..10 {
         let t = (x + (n / x)) >> 1;
         if t - x < 1 {
@@ -57,10 +83,4 @@ fn approx_int_sqrt(n: i64) -> i64 {
         x = t;
     }
     x + 1
-}
-
-// lightning fast log2 approximation to an integer
-fn approx_int_log2(n: i64) -> i64 {
-    64 - n.leading_zeros() as i64
-    // eventually will be able to replaced by n.log2(), currently experimental
 }

@@ -1,45 +1,41 @@
+use std::collections::BinaryHeap;
 
 //Inserting into and removing from a heap is O(log n) complexity
 //we can exploit this fact to create an easy sort that's O(n log n)
 pub fn heapsort<T: Ord + Copy>(list: &mut [T]) {
-    let mut heap = Vec::with_capacity(list.len());
-    for i in 0..list.len() {
-        insert(&mut heap, list[i]);
+    for i in (0..list.len() >> 1).rev() {
+        heapify(list, i);
     }
-    for i in 0..heap.len() {
-        list[i] = extract(&mut heap);
-    }
-}
-
-//Insert into heap, making sure that x < y where y is a child of x
-fn insert<T: Ord + Copy>(heap: &mut Vec<T>, val: T) {
-    let mut i = heap.len();
-    heap.push(val);
-    while i > 0 {
-        if heap[i] < heap[i >> 1] {
-            heap.swap(i, i >> 1);
-            i >>= 1;
-        } else {
-            break;
-        }
+    for i in (0..list.len()).rev() {
+        list.swap(0, i);
+        heapify(list, 0);
     }
 }
 
-//Extract from the heap, then making sure it stays balanced
-fn extract<T: Ord + Copy>(heap: &mut Vec<T>) -> T {
-    let mut i = 0;
-    let &out = heap.first().unwrap();
-    heap[0] = heap.pop().unwrap();
-    loop {
-        if (i << 1) < heap.len() && heap[i] < heap[i << 1] {
-            heap.swap(i, i >> 1);
-            i <<= 1;
-        } else if (i << 1) + 1 < heap.len() && heap[i] < heap[(i << 1) + 1] {
-            heap.swap(i, (i << 1) + 1);
-            i = (i << 1) + 1;
-        } else {
-            break;
-        }
+pub fn efficient_heapsort<T: Ord + Copy>(list: &mut [T]) {
+    let mut heap = BinaryHeap::with_capacity(list.len());
+    for e in list.iter() {
+        heap.push(*e);
     }
-    out
+    for i in (0..list.len()).rev() {
+        list[i] = heap.pop().unwrap();
+    }
+}
+
+fn heapify<T: Ord + Copy>(dat: &mut [T], i: usize) {
+    let mut largest = i;
+    let left = 2 * i + 1;
+    let right = 2 * i + 2;
+
+    if left < dat.len() && dat[left] > dat[largest] {
+        largest = left;
+    }
+    if right < dat.len() && dat[right] > dat[largest] {
+        largest = right;
+    }
+
+    if largest != i {
+        dat.swap(i, largest);
+        heapify(dat, largest);
+    }
 }

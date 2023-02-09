@@ -1,5 +1,3 @@
-use rand::{thread_rng, Rng};
-
 // Euclid's greatest common divisor algorithm
 pub fn gcd(a: i64, b: i64) -> i64 {
     match a % b {

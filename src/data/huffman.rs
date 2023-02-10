@@ -1,16 +1,14 @@
 use bit_vec::BitVec;
 use std::{collections::HashMap, hash::Hash};
 
-enum HuffTree<T: Eq + Hash + Copy> {
+enum HuffTree {
     Node(usize, Box<Self>, Box<Self>),
-    Leaf(usize, T),
+    Leaf(usize, u8),
 }
 
-type HuffEncodingTable<T: Eq + Hash + Copy> = HashMap<T, BitVec>;
-
-impl<T: Eq + Hash + Copy> HuffTree<T> {
-    fn gen_trees(list: &Vec<T>) -> Vec<Box<Self>> {
-        let mut map: HashMap<T, usize> = HashMap::new();
+impl HuffTree {
+    fn gen_trees(list: &Vec<u8>) -> Vec<Box<Self>> {
+        let mut map: HashMap<u8, usize> = HashMap::new();
         for elem in list {
             match map.get_mut(&elem) {
                 Some(i) => {
@@ -49,13 +47,13 @@ impl<T: Eq + Hash + Copy> HuffTree<T> {
 
     // A wrapper for encoding_recurse where you don't have to allocate the hashmap yourself.
     // Just a stylistic choice.
-    fn create_encoding_table(&self) -> HuffEncodingTable<T> {
+    fn create_encoding_table(&self) -> HashMap<u8, BitVec> {
         let mut out = HashMap::new();
         self.encoding_recurse(BitVec::new(), &mut out);
         out
     }
 
-    fn encoding_recurse(&self, s: BitVec, mut table: &mut HuffEncodingTable<T>) {
+    fn encoding_recurse(&self, s: BitVec, mut table: &mut HashMap<u8, BitVec>) {
         match self {
             HuffTree::Node(_, left, right) => {
                 let mut tmp = s.clone();
@@ -72,7 +70,7 @@ impl<T: Eq + Hash + Copy> HuffTree<T> {
     }
 }
 
-fn huffman_encode_full<T: Eq + Hash + Copy>(data: Vec<T>) -> (HuffTree<T>, BitVec) {
+fn huffman_encode_full(data: Vec<u8>) -> (HuffTree, BitVec) {
     let root = *HuffTree::merge_all(&mut HuffTree::gen_trees(&data));
     let table = root.create_encoding_table();
     let mut bin_str = BitVec::new();
@@ -82,5 +80,4 @@ fn huffman_encode_full<T: Eq + Hash + Copy>(data: Vec<T>) -> (HuffTree<T>, BitVe
     }
     (root, bin_str)
 }
-
 

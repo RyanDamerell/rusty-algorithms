@@ -72,7 +72,7 @@ impl<T: Eq + Hash + Copy> HuffTree<T> {
     }
 }
 
-fn HuffmanEncodeFull<T: Eq + Hash + Copy>(data: Vec<T>) -> (HuffTree<T>, BitVec) {
+fn huffman_encode_full<T: Eq + Hash + Copy>(data: Vec<T>) -> (HuffTree<T>, BitVec) {
     let root = *HuffTree::merge_all(&mut HuffTree::gen_trees(&data));
     let table = root.create_encoding_table();
     let mut bin_str = BitVec::new();
@@ -82,3 +82,5 @@ fn HuffmanEncodeFull<T: Eq + Hash + Copy>(data: Vec<T>) -> (HuffTree<T>, BitVec)
     }
     (root, bin_str)
 }
+
+
